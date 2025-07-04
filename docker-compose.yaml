@@ -1,0 +1,61 @@
+include:
+  - docker-compose.ext-services.yaml
+
+services:
+
+  prefect-database:
+    image: postgres:15.2-alpine
+    restart: no
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=prefect
+    expose:
+      - 5432
+    volumes:
+      - db:/var/lib/postgresql/data
+
+  server:
+    image: prefecthq/prefect:3.2.6-python3.12
+    restart: no
+    volumes:
+      - prefect:/root/.prefect
+    entrypoint: ["/opt/prefect/entrypoint.sh", "prefect", "server", "start"]
+    environment:
+      - PREFECT_UI_URL=http://127.0.0.1:4200/api
+      - PREFECT_API_URL=http://127.0.0.1:4200/api
+      - PREFECT_SERVER_API_HOST=0.0.0.0
+      - PREFECT_API_DATABASE_CONNECTION_URL=postgresql+asyncpg://postgres:postgres@prefect-database:5432/prefect
+      - PREFECT__CLOUD__USE_REMOTE_CODE=false
+    ports:
+      - 4200:4200
+    depends_on:
+      - prefect-database
+
+  agent:
+    image: prefecthq/prefect:3.2.6-python3.12
+    restart: no
+    entrypoint: [ "/bin/sh", "-c", "pip install -r /root/flows/requirements.prefect.txt && prefect work-pool create default --type process || true && prefect worker start --pool 'default' --work-queue 'default' || sleep infinity" ]
+    environment:
+      - PREFECT_API_URL=http://server:4200/api
+    depends_on:
+      - server
+    volumes:
+      - "./:/root/flows"
+    working_dir: "/root/flows"
+
+  cli:
+    build: .
+    entrypoint: ["bash", "-c"]
+    command: >
+      "prefect deploy --all && bash"
+    working_dir: "/root/flows"
+    volumes:
+        - "./:/root/flows"
+    environment:
+      - PREFECT_API_URL=http://server:4200/api
+      - PYTHONPATH=/root/flows
+
+volumes:
+  prefect:
+  db:
