@@ -1,0 +1,24 @@
+name: orchestrator
+prefect-version: 3.2.6
+deployments:
+
+- name: basic-etl
+  entrypoint: src/flows/basic-etl:etl_template_flow
+  pull_steps: false
+  tags:
+  - basic
+  - etl
+  - s3
+  version:
+  concurrency_limit:
+  description:
+  parameters: {}
+  work_pool:
+    name: default
+    work_queue_name:
+    job_variables: {}
+  schedules:
+  - cron: 0 0 * * *
+    timezone: America/Sao_Paulo
+    day_or: true
+    active: true
