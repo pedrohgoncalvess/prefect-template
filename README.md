@@ -97,10 +97,6 @@ Feel free to fork, extend, or contribute back to this template to help others bu
 
 ---
 
-## License
-
-This project is open source and available under the [MIT License](LICENSE).
-
 ## Development Environment Setup
 
 This project uses [uv](https://github.com/astral-sh/uv) for managing the Python environment and dependencies. A `Makefile` is included to simplify the setup process across Windows and Unix-based systems.
@@ -128,3 +124,9 @@ make clean      # Deletes the virtual environment
 ```
 
 The Makefile detects the operating system and adjusts the commands accordingly. It ensures UV is installed before creating the virtual environment and syncing dependencies.
+
+---
+
+## License
+
+This project is open source and available under the [MIT License](LICENSE).
