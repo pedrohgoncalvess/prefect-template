@@ -1,0 +1,10 @@
+pyyaml
+python-dotenv
+duckdb
+psycopg
+psycopg-binary
+prefect
+polars
+minio
+pyarrow
+s3fs
