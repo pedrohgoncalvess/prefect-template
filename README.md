@@ -86,7 +86,7 @@ pip install -r requirements.prefect.txt
 
 ## Notes
 
-- The `database/` module includes everything you need to establish a PostgreSQL connection and manage schema migrations (e.g., using Alembic).
+- The `database/` module includes everything you need to establish a PostgreSQL connection and manage schema migrations (e.g., using Yoyo Migrations).
 - MinIO can be accessed via its web UI or via any S3-compatible client using the credentials and endpoint configured in the compose file.
 
 ---
